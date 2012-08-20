@@ -15,7 +15,6 @@ set(SOURCE_FILES src/message_header.cpp
 set(HEADER_FILES include/ztech/zp/flags.hpp
                  include/ztech/zp/message_header.hpp
                  include/ztech/zp/message.hpp
-                 include/ztech/zp/crc.hpp
                  include/ztech/zp/util/serialization.hpp
                  include/ztech/zp/util/message_builder.hpp)
 include_directories(include/)
