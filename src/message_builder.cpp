@@ -45,21 +45,6 @@ auto message_builder::with_flags(ztech::zp::flags flags) noexcept
     return *this;
 }
 
-auto message_builder::end_of_stream() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::flags::end_of_stream;
-    return *this;
-}
-
-auto message_builder::end_of_session() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::flags::end_of_session;
-    return *this;
-}
-
-auto message_builder::require_ack() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::flags::requires_ack;
-    return *this;
-}
-
 auto message_builder::with_body(const std::vector<std::uint8_t>& body) noexcept
     -> message_builder& {
     assert(body.size() <= ztech::zp::message_header::max_body_length);

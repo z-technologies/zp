@@ -27,9 +27,6 @@ class message_builder {
     auto with_command(std::uint16_t command) noexcept -> message_builder&;
     auto with_tag(std::uint32_t tag) noexcept -> message_builder&;
     auto with_flags(ztech::zp::flags flags) noexcept -> message_builder&;
-    auto end_of_stream() noexcept -> message_builder&;
-    auto end_of_session() noexcept -> message_builder&;
-    auto require_ack() noexcept -> message_builder&;
 
     auto with_body(const std::vector<std::uint8_t>& body) noexcept
         -> message_builder&;
