@@ -8,11 +8,8 @@ namespace ztech::zp {
 using flags_underlying_type = std::uint8_t;
 
 enum class flags : flags_underlying_type {
-    none           = 0U,
-    is_request     = 1U << 0U,
-    end_of_stream  = 1U << 1U,
-    end_of_session = 1U << 2U,
-    requires_ack   = 1U << 3U,
+    none       = 0U,
+    is_request = 1U << 0U,
 };
 
 inline auto operator|(const flags& rhs, const flags& lhs) -> flags {
