@@ -1,5 +1,5 @@
-# hidden files
-.*
+# exclude clang files
+!.clang*
 
 # build files
 **/*.o

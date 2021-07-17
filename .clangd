@@ -1,0 +1,18 @@
+CompileFlags:
+  Add:
+    - -xc++
+    - -Wall
+    - -std=c++17
+    - -I/usr/local/include/
+
+
+Diagnostics:
+  ClangTidy:
+    Add:
+        - modernize*
+        - performance*
+        - readability*
+        - cppcoreguidelines*
+        - bugprone*
+        - cert*
+        - hicpp*
