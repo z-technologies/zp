@@ -1,5 +1,5 @@
-#ifndef ZTECH_ZP_REQUEST_HPP
-#define ZTECH_ZP_REQUEST_HPP
+#ifndef ZTECH_ZP_MESSAGE_WRITER_HPP
+#define ZTECH_ZP_MESSAGE_WRITER_HPP
 
 #include "ztech/zp/message.hpp"
 #include "ztech/zp/message_header.hpp"
