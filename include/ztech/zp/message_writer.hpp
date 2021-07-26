@@ -6,7 +6,6 @@
 
 #include "msgpack/pack.hpp"
 
-#include <iostream>
 
 namespace ztech::zp {
 inline namespace v1 {
