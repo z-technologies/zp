@@ -1,5 +1,5 @@
-#ifndef ZTECH_ZP_MESSAGE_HPP
-#define ZTECH_ZP_MESSAGE_HPP
+#ifndef ZTECH_ZP_MESSAGE_HEADER_HPP
+#define ZTECH_ZP_MESSAGE_HEADER_HPP
 
 #include "ztech/zp/flags.hpp"
 
@@ -30,6 +30,7 @@ struct message_header {
     ztech::zp::v1::flags flags;
     std::uint16_t        tag;
     std::uint16_t        body_length;
+    std::uint16_t        actual_length;
 };
 
 } // namespace v1
