@@ -4,20 +4,19 @@
 #include "ztech/zp/message_header.hpp"
 
 #include <cstdint>
-#include <vector>
+#include <sstream>
 
 namespace ztech::zp {
-
 inline namespace v1 {
 
-template <typename TCommand>
-requires ztech::zp::detail::is_command_error_code<TCommand>
+template <typename TCommandErrorCode>
+requires ztech::zp::detail::is_command_error_code<TCommandErrorCode>
 struct message {
-    ztech::zp::v1::message_header<TCommand> header;
-    std::vector<std::uint8_t>               body;
+    ztech::zp::v1::message_header<TCommandErrorCode> header;
+    std::stringstream                                body;
 };
 
 } // namespace v1
-
 } // namespace ztech::zp
+
 #endif
