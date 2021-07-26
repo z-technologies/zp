@@ -8,11 +8,12 @@ namespace ztech::zp {
 inline namespace v1 {
 
 enum class flags : std::uint16_t {
-    none                 = 0x0000,
-    end_of_conversation  = 0x0001,
-    terminate_connection = 0x0002,
-    checksum             = 0x0004,
-    ack                  = 0x0008
+    none                 = 0,
+    end_of_conversation  = 1 << 0,
+    terminate_connection = 1 << 1,
+    checksum             = 1 << 2,
+    ack                  = 1 << 3,
+    compress             = 1 << 4,
 };
 
 }
