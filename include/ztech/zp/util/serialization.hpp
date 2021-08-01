@@ -7,6 +7,11 @@
 #include "msgpack/pack.hpp"
 #include "msgpack/unpack.hpp"
 
+#include "msgpack/adaptor/bool.hpp"
+#include "msgpack/adaptor/float.hpp"
+#include "msgpack/adaptor/int.hpp"
+#include "msgpack/adaptor/raw.hpp"
+
 namespace ztech::zp::util {
 
 namespace detail {
@@ -32,12 +37,20 @@ class stl_container_wrapper {
     explicit stl_container_wrapper(Container<T>& wrapped) : wrapped_{wrapped} {
     }
 
-    inline void write(std::span<T> data) {
-        wrapped_.insert(std::end(wrapped_), std::cbegin(data), std::cend(data));
+    inline void write(const char* data, std::size_t len) {
+        wrapped_.insert(std::end(wrapped_), &data[0], &data[len]); // NOLINT
     }
 
-    inline void write(const char* data, std::size_t len) {
-        write(std::span<T>{data, len});
+    inline auto data() const noexcept -> const T* {
+        return wrapped_.data();
+    }
+
+    [[nodiscard]] inline auto size() const noexcept -> std::size_t {
+        return wrapped_.size();
+    }
+
+    inline void clear() {
+        wrapped_.clear();
     }
 
   private:
@@ -50,11 +63,16 @@ void serialize(Buffer& buf, const T& value) {
 }
 
 template <typename Buffer, typename T>
-void deserialize(const Buffer& buf, T& out) {
-    auto handle = msgpack::unpack(buf.data(), buf.size());
+auto deserialize(const Buffer& buf, T& out) -> bool {
+    auto handle = msgpack::unpack(reinterpret_cast<const char*>(buf.data()),
+                                  buf.size()); // NOLINT
+
+    if (handle->is_nil()) {
+        return false;
+    }
 
     auto obj = handle.get();
-    obj.template convert<T>(out);
+    return obj.template convert_if_not_nil<T>(out);
 }
 
 } // namespace ztech::zp::util
