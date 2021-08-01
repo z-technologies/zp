@@ -17,7 +17,7 @@ include_directories(include/)
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
 # external dependencies
-add_definitions(-DMSGPACK_USE_BOOST)
+add_definitions(-DMSGPACK_USE_BOOST -DMSGPACK_CXX17)
 add_subdirectory(lib/msgpack-c/)
 
 target_link_libraries(${PROJECT_NAME} msgpack)
