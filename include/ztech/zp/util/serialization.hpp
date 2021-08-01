@@ -4,9 +4,9 @@
 #include <span>
 #include <type_traits>
 
+#include "msgpack/adaptor/raw.hpp"
 #include "msgpack/pack.hpp"
 #include "msgpack/unpack.hpp"
-#include "msgpack/adaptor/raw.hpp"
 
 namespace ztech::zp::util {
 
@@ -59,7 +59,7 @@ void serialize(Buffer& buf, const T& value) {
 }
 
 template <typename Buffer, typename T>
-auto deserialize(const Buffer& buf, T& out) -> bool {
+[[nodiscard]] auto deserialize(const Buffer& buf, T& out) -> bool {
     auto handle = msgpack::unpack(reinterpret_cast<const char*>(buf.data()),
                                   buf.size()); // NOLINT
 
