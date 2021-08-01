@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 # project name
 project(zp LANGUAGES CXX)
+set(MAIN_PROJECT_NAME ${PROJECT_NAME})
 
 # project options
 set(CMAKE_CXX_STANDARD 20)
@@ -14,15 +15,21 @@ set(HEADER_FILES include/ztech/zp/message.hpp
 include_directories(include/)
 
 ## external dependencies
-# msgpack-c
-add_definitions(-DMSGPACK_USE_BOOST -DMSGPACK_CXX17)
-add_subdirectory(lib/msgpack-c/)
+# boost
+find_package(Boost)
+include_directories(${Boost_INCLUDE_DIR})
+# msgpack
+add_definitions(-DMSGPACK_USE_BOOST -DMSGPACK_BUILD_EXAMPLES=OFF -DMSGPACK_CXX17)
+add_subdirectory(lib/msgpack-c)
 # googletest
 add_subdirectory(lib/googletest)
+# fmt
+add_subdirectory(lib/fmt)
 
 # targets
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} msgpack)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_link_libraries(${PROJECT_NAME} msgpackcxx fmt::fmt)
 
 # testing
 enable_testing()
