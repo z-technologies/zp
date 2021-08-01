@@ -6,10 +6,6 @@
 
 #include "msgpack/pack.hpp"
 #include "msgpack/unpack.hpp"
-
-#include "msgpack/adaptor/bool.hpp"
-#include "msgpack/adaptor/float.hpp"
-#include "msgpack/adaptor/int.hpp"
 #include "msgpack/adaptor/raw.hpp"
 
 namespace ztech::zp::util {
