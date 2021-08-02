@@ -24,13 +24,14 @@ inline void test_fundamental_type(Container& c) {
     c.clear();
     ztech::zp::util::serialize(c, random_value);
 
-    T out_value{};
-    ztech::zp::util::deserialize(c, out_value);
+    T    out_value{};
+    auto success = ztech::zp::util::deserialize(c, out_value);
 
     ASSERT_EQ(random_value, out_value);
+    ASSERT_TRUE(success);
 }
 
-TEST(SerializationTests, STLPrimitiveTypesTest) {
+TEST(SerializationTests, STLPrimitiveTypesTest) { // !NOLINT
     std::vector<std::uint8_t>              buf{};
     ztech::zp::util::stl_container_wrapper wrapper{buf};
 
@@ -43,7 +44,7 @@ TEST(SerializationTests, STLPrimitiveTypesTest) {
     test_fundamental_type<double>(wrapper);
 }
 
-TEST(SerializationTests, MsgPackBufferPrimitiveTypesTest) {
+TEST(SerializationTests, MsgPackBufferPrimitiveTypesTest) { // !NOLINT
     msgpack::sbuffer buf{};
 
     test_fundamental_type<bool>(buf);
