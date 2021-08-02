@@ -30,7 +30,7 @@ class message_builder {
     auto end_of_stream() noexcept -> message_builder&;
     auto end_of_session() noexcept -> message_builder&;
     auto require_ack() noexcept -> message_builder&;
-    auto include_checksum() noexcept -> message_builder&;
+    auto include_crc() noexcept -> message_builder&;
 
     auto with_body(const std::vector<std::uint8_t>& body) noexcept
         -> message_builder&;
