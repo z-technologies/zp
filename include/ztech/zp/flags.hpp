@@ -11,7 +11,7 @@ enum class flags : std::uint16_t {
     end_of_message = 1U << 0U,
     end_of_stream  = 1U << 1U,
     end_of_session = 1U << 2U,
-    has_crc        = 1U << 3U,
+    has_checksum   = 1U << 3U,
     requires_ack   = 1U << 4U,
 };
 
