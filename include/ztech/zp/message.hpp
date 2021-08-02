@@ -6,10 +6,10 @@
 #include <cstdint>
 #include <vector>
 
-namespace ztech::zp {
-inline namespace v1 {
+namespace ztech::zp::inline v1 {
 
 class message {
+  public:
     message(ztech::zp::v1::message_header header,
             std::vector<std::uint8_t>&&   body)
         : header_{header}, body_{std::move(body)} {
@@ -30,7 +30,6 @@ class message {
     std::vector<std::uint8_t>     body_;
 };
 
-} // namespace v1
-} // namespace ztech::zp
+} // namespace ztech::zp::inline v1
 
 #endif
