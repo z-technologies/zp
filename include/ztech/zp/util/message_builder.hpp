@@ -5,29 +5,29 @@
 #include "ztech/zp/message_header.hpp"
 
 #include <atomic>
+#include <cstdint>
 #include <limits>
+#include <vector>
 
 namespace ztech::zp {
 inline namespace v1 {
 
 class message_body_builder;
 
-class message_header_builder {
+class message_builder {
   public:
-    message_header_builder(std::uint16_t type, std::uint16_t command);
+    message_builder(std::uint16_t type, std::uint16_t command);
 
-    auto with_version(std::uint8_t version) noexcept -> message_header_builder&;
-    auto with_type(std::uint16_t type) noexcept -> message_header_builder&;
-    auto with_command(std::uint16_t command) noexcept
-        -> message_header_builder&;
-    auto with_tag(std::uint16_t tag) noexcept -> message_header_builder&;
-    auto with_flags(ztech::zp::v1::flags flags) noexcept
-        -> message_header_builder&;
-    auto end_of_message() noexcept -> message_header_builder&;
-    auto end_of_stream() noexcept -> message_header_builder&;
-    auto end_of_session() noexcept -> message_header_builder&;
-    auto require_ack() noexcept -> message_header_builder&;
-    auto include_checksum() noexcept -> message_header_builder&;
+    auto with_version(std::uint8_t version) noexcept -> message_builder&;
+    auto with_type(std::uint16_t type) noexcept -> message_builder&;
+    auto with_command(std::uint16_t command) noexcept -> message_builder&;
+    auto with_tag(std::uint16_t tag) noexcept -> message_builder&;
+    auto with_flags(ztech::zp::v1::flags flags) noexcept -> message_builder&;
+    auto end_of_message() noexcept -> message_builder&;
+    auto end_of_stream() noexcept -> message_builder&;
+    auto end_of_session() noexcept -> message_builder&;
+    auto require_ack() noexcept -> message_builder&;
+    auto include_checksum() noexcept -> message_builder&;
 
   private:
     template <
