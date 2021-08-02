@@ -4,10 +4,7 @@
 #include <span>
 #include <type_traits>
 
-#include "msgpack/pack.hpp"
-#include "msgpack/unpack.hpp"
-
-#include "msgpack/adaptor/raw.hpp"
+#include "msgpack.hpp"
 
 namespace ztech::zp::util {
 
@@ -71,6 +68,8 @@ template <typename Buffer, typename T>
     auto obj = handle.get();
     return obj.template convert_if_not_nil<T>(out);
 }
+
+#define ZP_DEFINE MSGPACK_DEFINE
 
 } // namespace ztech::zp::util
 
