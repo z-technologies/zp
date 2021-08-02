@@ -17,7 +17,7 @@ constexpr auto test_string_size = 0xFF;
 
 namespace tikpp::tests {
 
-TEST(UtilRandomTests, NumOnlyTest) {
+TEST(UtilRandomTests, NumOnlyTest) { // !NOLINT
     auto str = random_string(::test_string_size, random_string_options::num);
 
     EXPECT_EQ(str.size(), ::test_string_size);
@@ -25,7 +25,7 @@ TEST(UtilRandomTests, NumOnlyTest) {
                             [](auto c) { return std::isdigit(c); }));
 }
 
-TEST(UtilRandomTests, AlphaTest) {
+TEST(UtilRandomTests, AlphaTest) { // !NOLINT
     auto str = random_string(::test_string_size, random_string_options::alpha);
 
     EXPECT_EQ(str.size(), ::test_string_size);
@@ -33,7 +33,7 @@ TEST(UtilRandomTests, AlphaTest) {
                             [](auto c) { return std::isalpha(c); }));
 }
 
-TEST(UtilRandomTests, LowerAlphaTest) {
+TEST(UtilRandomTests, LowerAlphaTest) { // !NOLINT
     auto str = random_string(::test_string_size,
                              random_string_options::alpha |
                                  random_string_options::lower_case);
@@ -44,7 +44,7 @@ TEST(UtilRandomTests, LowerAlphaTest) {
     }));
 }
 
-TEST(UtilRandomTests, UpperAlphaTest) {
+TEST(UtilRandomTests, UpperAlphaTest) { // !NOLINT
     auto str = random_string(::test_string_size,
                              random_string_options::alpha |
                                  random_string_options::upper_case);
@@ -55,7 +55,7 @@ TEST(UtilRandomTests, UpperAlphaTest) {
     }));
 }
 
-TEST(UtilRandomTests, MixedAlphaTest) {
+TEST(UtilRandomTests, MixedAlphaTest) { // !NOLINT
     auto str = random_string(::test_string_size,
                              random_string_options::alpha |
                                  random_string_options::mixed_case);
@@ -66,7 +66,7 @@ TEST(UtilRandomTests, MixedAlphaTest) {
     }));
 }
 
-TEST(UtilRandomTests, AlphaNumTest) {
+TEST(UtilRandomTests, AlphaNumTest) { // !NOLINT
     auto str =
         random_string(::test_string_size, random_string_options::alphanum);
 
@@ -75,7 +75,7 @@ TEST(UtilRandomTests, AlphaNumTest) {
                             [](auto c) { return std::isalnum(c); }));
 }
 
-TEST(UtilRandomTests, SymboleTest) {
+TEST(UtilRandomTests, SymboleTest) { // !NOLINT
     auto str = random_string(::test_string_size, random_string_options::sym);
 
     EXPECT_EQ(str.size(), ::test_string_size);
@@ -83,12 +83,12 @@ TEST(UtilRandomTests, SymboleTest) {
                             [](auto c) { return !std::isalnum(c); }));
 }
 
-TEST(UtilRandomTests, MixedTest) {
+TEST(UtilRandomTests, MixedTest) { // !NOLINT
     auto str = random_string(::test_string_size, random_string_options::mixed);
     EXPECT_EQ(str.size(), ::test_string_size);
 }
 
-TEST(UtilRandomTests, IntTest) {
+TEST(UtilRandomTests, IntTest) { // !NOLINT
     constexpr auto min = 1;
     constexpr auto max = 100;
 
@@ -98,7 +98,7 @@ TEST(UtilRandomTests, IntTest) {
     EXPECT_LE(value, max);
 }
 
-TEST(UtilRandomTests, DoubleTest) {
+TEST(UtilRandomTests, DoubleTest) { // !NOLINT
     constexpr auto min = 1.0;
     constexpr auto max = 100.0;
 
@@ -108,7 +108,7 @@ TEST(UtilRandomTests, DoubleTest) {
     EXPECT_LE(value, max);
 }
 
-TEST(UtilRandomTests, LongTest) {
+TEST(UtilRandomTests, LongTest) { // !NOLINT
     constexpr auto min = 1UL;
     constexpr auto max = 100UL;
 
