@@ -10,10 +10,9 @@ inline namespace v1 {
 
 constexpr std::uint8_t protocol_version{0x00};
 
-template <typename TExtra>
 struct message_header {
-    std::uint8_t         version : 4;
-    std::uint16_t        type    : 12;
+    std::uint8_t         version;
+    std::uint16_t        type;
     std::uint16_t        command;
     std::uint16_t        tag;
     ztech::zp::v1::flags flags;
