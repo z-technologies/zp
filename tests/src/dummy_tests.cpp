@@ -2,7 +2,7 @@
 
 namespace ztech::zp::tests {
 
-TEST(DummyTests, DummyTest) {
+TEST(DummyTests, DummyTest) { // !NOLINT
     EXPECT_TRUE(true);
     EXPECT_EQ(1, 1);
 }
