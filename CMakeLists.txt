@@ -9,9 +9,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # project files
-set(SOURCE_FILES src/dummy.cpp)
-set(HEADER_FILES include/ztech/zp/message.hpp
-                 include/ztech/zp/flags.hpp)
+set(SOURCE_FILES src/message_builder.cpp)
+set(HEADER_FILES include/ztech/zp/flags.hpp
+                 include/ztech/zp/message_header.hpp
+                 include/ztech/zp/message.hpp
+                 include/ztech/zp/crc.hpp
+                 include/ztech/zp/util/serialization.hpp
+                 include/ztech/zp/util/message_builder.hpp)
 include_directories(include/)
 
 ## external dependencies
