@@ -65,8 +65,8 @@ auto message_builder::require_ack() noexcept -> message_builder& {
     return *this;
 }
 
-auto message_builder::include_crc() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::v1::flags::has_crc;
+auto message_builder::include_checksum() noexcept -> message_builder& {
+    header_.flags |= ztech::zp::v1::flags::has_checksum;
     return *this;
 }
 
