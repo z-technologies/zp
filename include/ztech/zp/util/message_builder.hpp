@@ -2,21 +2,24 @@
 #define ZTECH_ZP_UTIL_MESSAGE_BUILDER_HPP
 
 #include "ztech/zp/flags.hpp"
+#include "ztech/zp/message.hpp"
 #include "ztech/zp/message_header.hpp"
+#include "ztech/zp/util/serialization.hpp"
 
 #include <atomic>
 #include <cstdint>
 #include <limits>
 #include <vector>
 
-namespace ztech::zp {
-inline namespace v1 {
+namespace ztech::zp::inline v1 {
 
 class message_body_builder;
 
 class message_builder {
   public:
     message_builder(std::uint16_t type, std::uint16_t command);
+    message_builder(std::uint16_t type, std::uint16_t command,
+                    std::vector<std::uint8_t> body);
 
     auto with_version(std::uint8_t version) noexcept -> message_builder&;
     auto with_type(std::uint16_t type) noexcept -> message_builder&;
@@ -28,6 +31,22 @@ class message_builder {
     auto end_of_session() noexcept -> message_builder&;
     auto require_ack() noexcept -> message_builder&;
     auto include_checksum() noexcept -> message_builder&;
+
+    auto with_body(const std::vector<std::uint8_t>& body) noexcept
+        -> message_builder&;
+    auto with_body(std::vector<std::uint8_t>&& body) noexcept
+        -> message_builder&;
+
+    template <typename T>
+    auto with_body(const T& value) noexcept -> message_builder& {
+        body_.clear();
+        ztech::zp::util::serialize(body_, value);
+        header_.body_length = body_.size();
+
+        return *this;
+    }
+
+    auto build() noexcept -> ztech::zp::v1::message;
 
   private:
     template <
@@ -49,9 +68,9 @@ class message_builder {
     }
 
     ztech::zp::v1::message_header header_{};
+    std::vector<std::uint8_t>     body_;
 };
 
-} // namespace v1
-} // namespace ztech::zp
+} // namespace ztech::zp::inline v1
 
 #endif

@@ -1,15 +1,22 @@
 #include "ztech/zp/util/message_builder.hpp"
 
-namespace ztech::zp::v1 {
+namespace ztech::zp::inline v1 {
 
-message_builder::message_builder(std::uint16_t type, std::uint16_t command)
+message_builder::message_builder(std::uint16_t type, std::uint16_t command,
+                                 std::vector<std::uint8_t> body)
     : header_{.version     = ztech::zp::v1::protocol_version,
               .type        = type,
               .command     = command,
               .tag         = next_tag(),
               .flags       = ztech::zp::flags::none,
-              .body_length = 0U} {
+              .body_length = 0U},
+      body_{std::move(body)} {
 }
+
+message_builder::message_builder(std::uint16_t type, std::uint16_t command)
+    : message_builder{type, command, {}} {
+}
+
 auto message_builder::with_version(std::uint8_t version) noexcept
     -> message_builder& {
     header_.version = version;
@@ -63,4 +70,24 @@ auto message_builder::include_checksum() noexcept -> message_builder& {
     return *this;
 }
 
-} // namespace ztech::zp::v1
+auto message_builder::with_body(const std::vector<std::uint8_t>& body) noexcept
+    -> message_builder& {
+    body_               = body;
+    header_.body_length = body_.size();
+
+    return *this;
+}
+
+auto message_builder::with_body(std::vector<std::uint8_t>&& body) noexcept
+    -> message_builder& {
+    body_               = std::move(body);
+    header_.body_length = body_.size();
+
+    return *this;
+}
+
+auto message_builder::build() noexcept -> ztech::zp::v1::message {
+    return {header_, std::move(body_)};
+}
+
+} // namespace ztech::zp::inline v1
