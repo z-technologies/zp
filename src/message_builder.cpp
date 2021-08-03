@@ -1,6 +1,6 @@
 #include "ztech/zp/util/message_builder.hpp"
 
-namespace ztech::zp::inline v1 {
+namespace ztech::zp::util::inline v1 {
 
 message_builder::message_builder(std::uint16_t type, std::uint16_t command,
                                  std::vector<std::uint8_t> body)
@@ -15,6 +15,9 @@ message_builder::message_builder(std::uint16_t type, std::uint16_t command,
 
 message_builder::message_builder(std::uint16_t type, std::uint16_t command)
     : message_builder{type, command, {}} {
+}
+
+message_builder::message_builder() : message_builder{0, 0} {
 }
 
 auto message_builder::with_version(std::uint8_t version) noexcept
@@ -39,6 +42,7 @@ auto message_builder::with_tag(std::uint16_t tag) noexcept -> message_builder& {
     header_.tag = tag;
     return *this;
 }
+
 auto message_builder::with_flags(ztech::zp::v1::flags flags) noexcept
     -> message_builder& {
     header_.flags = flags;
@@ -90,4 +94,4 @@ auto message_builder::build() noexcept -> ztech::zp::v1::message {
     return {header_, std::move(body_)};
 }
 
-} // namespace ztech::zp::inline v1
+} // namespace ztech::zp::util::inline v1

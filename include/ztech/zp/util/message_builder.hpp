@@ -11,15 +11,16 @@
 #include <limits>
 #include <vector>
 
-namespace ztech::zp::inline v1 {
+namespace ztech::zp::util::inline v1 {
 
 class message_body_builder;
 
 class message_builder {
   public:
-    message_builder(std::uint16_t type, std::uint16_t command);
     message_builder(std::uint16_t type, std::uint16_t command,
                     std::vector<std::uint8_t> body);
+    message_builder(std::uint16_t type, std::uint16_t command);
+    message_builder();
 
     auto with_version(std::uint8_t version) noexcept -> message_builder&;
     auto with_type(std::uint16_t type) noexcept -> message_builder&;
@@ -71,6 +72,6 @@ class message_builder {
     std::vector<std::uint8_t>     body_;
 };
 
-} // namespace ztech::zp::inline v1
+} // namespace ztech::zp::util::inline v1
 
 #endif
