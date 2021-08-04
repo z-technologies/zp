@@ -7,6 +7,7 @@
 #include "ztech/zp/util/serialization.hpp"
 
 #include <atomic>
+#include <cassert>
 #include <cstdint>
 #include <limits>
 #include <vector>
@@ -25,13 +26,12 @@ class message_builder {
     auto with_version(std::uint8_t version) noexcept -> message_builder&;
     auto with_type(std::uint16_t type) noexcept -> message_builder&;
     auto with_command(std::uint16_t command) noexcept -> message_builder&;
-    auto with_tag(std::uint16_t tag) noexcept -> message_builder&;
+    auto with_tag(std::uint32_t tag) noexcept -> message_builder&;
     auto with_flags(ztech::zp::v1::flags flags) noexcept -> message_builder&;
-    auto end_of_message() noexcept -> message_builder&;
     auto end_of_stream() noexcept -> message_builder&;
     auto end_of_session() noexcept -> message_builder&;
     auto require_ack() noexcept -> message_builder&;
-    auto include_checksum() noexcept -> message_builder&;
+    auto include_body_checksum() noexcept -> message_builder&;
 
     auto with_body(const std::vector<std::uint8_t>& body) noexcept
         -> message_builder&;
@@ -42,6 +42,8 @@ class message_builder {
     auto with_body(const T& value) noexcept -> message_builder& {
         body_.clear();
         ztech::zp::util::serialize(body_, value);
+
+        assert(body_.size() <= ztech::zp::v1::message_header::max_body_length);
         header_.body_length = body_.size();
 
         return *this;
