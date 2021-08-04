@@ -21,4 +21,5 @@ create_test(testing_util_random)
 
 create_test(crc)
 create_test(serialization)
+create_test(message_header)
 create_test(message_builder)
