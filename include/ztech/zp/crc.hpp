@@ -4,6 +4,7 @@
 #include <boost/crc.hpp>
 
 #include <cstdint>
+#include <span>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -26,12 +27,16 @@ class crc_calculator final {
         boost::crc_32_type x;
     }
 
-    inline void process(const char* buf, std::size_t len) {
-        process(reinterpret_cast<const std::uint8_t*>(buf), len); // !NOLINT
+    inline void process(std::span<std::uint8_t> buf) {
+        process(buf.data(), buf.size());
     }
 
     inline void process(const std::vector<std::uint8_t>& buf) {
-        process(buf.data(), buf.size());
+        process(buf);
+    }
+
+    inline void process(const char* buf, std::size_t len) {
+        process(reinterpret_cast<const std::uint8_t*>(buf), len); // !NOLINT
     }
 
     inline void process(const std::string& str) {
