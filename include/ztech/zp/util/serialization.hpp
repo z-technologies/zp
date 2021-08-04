@@ -1,10 +1,9 @@
 #ifndef ZTECH_ZP_UTIL_SERIALIZATION_HPP
 #define ZTECH_ZP_UTIL_SERIALIZATION_HPP
 
-#include <span>
-#include <type_traits>
-
 #include "msgpack.hpp"
+
+#include <type_traits>
 
 namespace ztech::zp::util {
 
@@ -69,7 +68,7 @@ template <typename Buffer, typename T>
     return obj.template convert_if_not_nil<T>(out);
 }
 
-#define ZP_DEFINE MSGPACK_DEFINE
+#define ZP_DEFINE MSGPACK_DEFINE // !NOLINT
 
 } // namespace ztech::zp::util
 
