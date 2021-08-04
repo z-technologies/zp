@@ -3,19 +3,17 @@
 
 #include <cstdint>
 
-namespace ztech::zp {
-inline namespace v1 {
+namespace ztech::zp::inline v1 {
 
-enum class flags : std::uint16_t {
-    none           = 0,
-    end_of_message = 1U << 0U,
-    end_of_stream  = 1U << 1U,
-    end_of_session = 1U << 2U,
-    has_checksum   = 1U << 3U,
-    requires_ack   = 1U << 4U,
+using flags_underlying_type = std::uint16_t;
+
+enum class flags : flags_underlying_type {
+    none              = 0,
+    end_of_stream     = 1U << 0U,
+    end_of_session    = 1U << 1U,
+    has_body_checksum = 1U << 2U,
+    requires_ack      = 1U << 3U,
 };
-
-}
 
 inline auto operator|(const flags& rhs, const flags& lhs) -> flags {
     return static_cast<flags>(static_cast<std::uint16_t>(rhs) |
@@ -51,6 +49,6 @@ inline auto operator~(const flags& lhs) -> flags {
     return static_cast<flags>(~static_cast<std::uint16_t>(lhs));
 }
 
-} // namespace ztech::zp
+} // namespace ztech::zp::inline v1
 
 #endif
