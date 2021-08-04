@@ -16,3 +16,6 @@ Diagnostics:
         - bugprone*
         - cert*
         - hicpp*
+    Remove:
+        - cppcoreguidelines-avoid-magic-numbers
+        - readability-magic-numbers
