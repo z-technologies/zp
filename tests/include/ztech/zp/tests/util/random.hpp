@@ -80,7 +80,7 @@ auto random_string(std::size_t len, random_string_options opts) -> std::string {
 template <typename T, typename = std::enable_if_t<std::is_integral_v<T> ||
                                                   std::is_floating_point_v<T>>>
 auto random(T min = std::numeric_limits<T>::min(),
-         T max = std::numeric_limits<T>::max()) -> T {
+            T max = std::numeric_limits<T>::max()) -> T {
     std::mt19937 rng{std::random_device{}()};
 
     if constexpr (std::is_integral_v<T>) {
