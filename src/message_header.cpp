@@ -1,8 +1,6 @@
 #include "ztech/zp/message_header.hpp"
 #include "ztech/zp/detail/encoding.hpp"
 
-#include <boost/endian.hpp>
-
 #include <array>
 #include <cstdint>
 #include <vector>
