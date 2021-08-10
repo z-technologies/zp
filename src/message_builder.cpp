@@ -60,11 +60,6 @@ auto message_builder::require_ack() noexcept -> message_builder& {
     return *this;
 }
 
-auto message_builder::include_body_checksum() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::flags::has_body_checksum;
-    return *this;
-}
-
 auto message_builder::with_body(const std::vector<std::uint8_t>& body) noexcept
     -> message_builder& {
     assert(body.size() <= ztech::zp::message_header::max_body_length);
