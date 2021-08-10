@@ -26,11 +26,11 @@ struct message_header {
 };
 
 static_assert(message_header::size ==
-              sizeof(std::declval<message_header>().type) +
-                  sizeof(std::declval<message_header>().command) +
-                  sizeof(std::declval<message_header>().tag) +
-                  sizeof(std::declval<message_header>().flags) +
-                  sizeof(std::declval<message_header>().body_length));
+              (sizeof(std::declval<message_header>().type) +
+               sizeof(std::declval<message_header>().command) +
+               sizeof(std::declval<message_header>().tag) +
+               sizeof(std::declval<message_header>().flags) +
+               sizeof(std::declval<message_header>().body_length)));
 
 } // namespace ztech::zp
 
