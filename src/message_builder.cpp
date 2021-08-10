@@ -3,7 +3,7 @@
 #include <cassert>
 #include <cstdint>
 
-namespace ztech::zp::util::inline v1 {
+namespace ztech::zp::util {
 
 message_builder::message_builder(std::uint16_t type, std::uint16_t command,
                                  std::vector<std::uint8_t> body)
@@ -39,35 +39,35 @@ auto message_builder::with_tag(std::uint32_t tag) noexcept -> message_builder& {
     return *this;
 }
 
-auto message_builder::with_flags(ztech::zp::v1::flags flags) noexcept
+auto message_builder::with_flags(ztech::zp::flags flags) noexcept
     -> message_builder& {
     header_.flags = flags;
     return *this;
 }
 
 auto message_builder::end_of_stream() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::v1::flags::end_of_stream;
+    header_.flags |= ztech::zp::flags::end_of_stream;
     return *this;
 }
 
 auto message_builder::end_of_session() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::v1::flags::end_of_session;
+    header_.flags |= ztech::zp::flags::end_of_session;
     return *this;
 }
 
 auto message_builder::require_ack() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::v1::flags::requires_ack;
+    header_.flags |= ztech::zp::flags::requires_ack;
     return *this;
 }
 
 auto message_builder::include_body_checksum() noexcept -> message_builder& {
-    header_.flags |= ztech::zp::v1::flags::has_body_checksum;
+    header_.flags |= ztech::zp::flags::has_body_checksum;
     return *this;
 }
 
 auto message_builder::with_body(const std::vector<std::uint8_t>& body) noexcept
     -> message_builder& {
-    assert(body.size() <= ztech::zp::v1::message_header::max_body_length);
+    assert(body.size() <= ztech::zp::message_header::max_body_length);
 
     body_               = body;
     header_.body_length = body_.size();
@@ -77,7 +77,7 @@ auto message_builder::with_body(const std::vector<std::uint8_t>& body) noexcept
 
 auto message_builder::with_body(std::vector<std::uint8_t>&& body) noexcept
     -> message_builder& {
-    assert(body.size() <= ztech::zp::v1::message_header::max_body_length);
+    assert(body.size() <= ztech::zp::message_header::max_body_length);
 
     body_               = std::move(body);
     header_.body_length = body_.size();
@@ -85,8 +85,8 @@ auto message_builder::with_body(std::vector<std::uint8_t>&& body) noexcept
     return *this;
 }
 
-auto message_builder::build() noexcept -> ztech::zp::v1::message {
+auto message_builder::build() noexcept -> ztech::zp::message {
     return {header_, std::move(body_)};
 }
 
-} // namespace ztech::zp::util::inline v1
+} // namespace ztech::zp::util

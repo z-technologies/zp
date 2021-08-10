@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace ztech::zp::inline v1 {
+namespace ztech::zp {
 
 using flags_underlying_type = std::uint16_t;
 
@@ -49,6 +49,6 @@ inline auto operator~(const flags& lhs) -> flags {
     return static_cast<flags>(~static_cast<std::uint16_t>(lhs));
 }
 
-} // namespace ztech::zp::inline v1
+} // namespace ztech::zp
 
 #endif

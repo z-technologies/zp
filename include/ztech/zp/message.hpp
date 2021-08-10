@@ -6,17 +6,16 @@
 #include <cstdint>
 #include <vector>
 
-namespace ztech::zp::inline v1 {
+namespace ztech::zp {
 
 class message {
   public:
-    message(ztech::zp::v1::message_header header,
-            std::vector<std::uint8_t>&&   body)
+    message(ztech::zp::message_header header, std::vector<std::uint8_t>&& body)
         : header_{header}, body_{std::move(body)} {
     }
 
     [[nodiscard]] inline auto header() const noexcept
-        -> const ztech::zp::v1::message_header& {
+        -> const ztech::zp::message_header& {
         return header_;
     }
 
@@ -26,10 +25,10 @@ class message {
     }
 
   private:
-    ztech::zp::v1::message_header header_;
-    std::vector<std::uint8_t>     body_;
+    ztech::zp::message_header header_;
+    std::vector<std::uint8_t> body_;
 };
 
-} // namespace ztech::zp::inline v1
+} // namespace ztech::zp
 
 #endif

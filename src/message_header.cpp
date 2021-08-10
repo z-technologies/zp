@@ -12,10 +12,11 @@ namespace {
 
 template <std::size_t offset, typename T, std::size_t size = sizeof(T)>
 requires std::is_unsigned_v<T>
-inline void encode_uint(
-    T val, std::array<std::uint8_t, ztech::zp::v1::message_header::size>& buf) {
+inline void
+encode_uint(T                                                          val,
+            std::array<std::uint8_t, ztech::zp::message_header::size>& buf) {
     static_assert(size >= 1 && size <= 4 && size <= sizeof(T));
-    static_assert(offset + size <= ztech::zp::v1::message_header::size);
+    static_assert(offset + size <= ztech::zp::message_header::size);
 
     buf[offset + sizeof(T) - size] =
         (val >> (8 * (size - 1))) & 0xFF; // !NOLINT
@@ -27,9 +28,10 @@ inline void encode_uint(
 
 } // namespace
 
-namespace ztech::zp::inline v1 {
+namespace ztech::zp {
 
-void message_header::encode(std::array<std::uint8_t, size>& buf) noexcept {
+void message_header::encode(
+    std::array<std::uint8_t, size>& buf) const noexcept {
     constexpr std::size_t type_offset{0};
     constexpr std::size_t command_offset{type_offset + sizeof(type)};
     constexpr std::size_t flags_offset{command_offset + sizeof(command)};
@@ -49,4 +51,4 @@ void message_header::encode(std::array<std::uint8_t, size>& buf) noexcept {
     ::encode_uint<body_length_offset>(body_length, buf);
 }
 
-} // namespace ztech::zp::inline v1
+} // namespace ztech::zp
