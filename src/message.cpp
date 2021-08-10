@@ -19,13 +19,6 @@ auto message::flatten() const noexcept -> std::vector<std::uint8_t> {
     std::copy(std::cbegin(body_), std::cend(body_),
               std::back_inserter<>(retbuf));
 
-    if ((header_.flags & ztech::zp::flags::has_body_checksum) ==
-        ztech::zp::flags::has_body_checksum) {
-        ztech::zp::crc_calculator<body_crc_type> crc_calc{};
-        crc_calc.process(body_);
-        ztech::zp::detail::append_uint(crc_calc.value(), retbuf);
-    }
-
     return retbuf;
 }
 

@@ -28,17 +28,12 @@ TEST(MessageTests, FlattenTest) { // !NOLINT
                              .with_command(test_command)
                              .with_flags(test_flags)
                              .with_tag(test_tag)
-                             .include_body_checksum()
                              .build();
 
     std::vector<std::uint8_t> test_buf{};
     message.header().encode(test_buf);
     std::copy(std::cbegin(message.body()), std::cend(message.body()),
               std::back_inserter<>(test_buf));
-
-    ztech::zp::crc_calculator<ztech::zp::message::body_crc_type> crc_calc{};
-    crc_calc.process(message.body());
-    ztech::zp::detail::append_uint(crc_calc.value(), test_buf);
 
     const auto ret_buf = message.flatten();
 
