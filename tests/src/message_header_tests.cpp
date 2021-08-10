@@ -8,6 +8,7 @@
 #include <cstring>
 #include <vector>
 
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 
@@ -19,15 +20,17 @@ constexpr std::array<std::uint8_t, ::header_size> test_header_bytes{
     0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE};
 
 const ztech::zp::message_header test_header{
-    .type        = 0x1122,
-    .command     = 0x3344,
-    .flags       = static_cast<ztech::zp::flags>(0x5566),
+    .version     = 0x11,
+    .type        = 0x2233,
+    .command     = 0x4455,
+    .flags       = static_cast<ztech::zp::flags>(0x66),
     .tag         = 0x778899AA,
     .body_length = 0xBBCCDDEE};
 
 template <typename T, typename U>
 auto compare_containers(const T& c1, const U& c2) -> bool {
-    return std::memcmp(c1.data(), c2.data(), c1.size()) == 0;
+    return std::equal(std::cbegin(c1), std::cend(c1), std::cbegin(c2),
+                      std::cend(c2));
 }
 
 } // namespace
@@ -36,15 +39,15 @@ namespace ztech::zp::tests {
 
 TEST(MessageHeaderTests, HeaderArrayEncodeTest) { // !NOLINT
     std::array<std::uint8_t, header_size> buf{};
-
     test_header.encode(buf);
+
     EXPECT_TRUE(::compare_containers(test_header_bytes, buf));
 }
 
 TEST(MessageHeaderTests, HeaderVectorEncodeTest) { // !NOLINT
     std::vector<std::uint8_t> buf{};
-
     test_header.encode(buf);
+
     EXPECT_TRUE(::compare_containers(test_header_bytes, buf));
 }
 
