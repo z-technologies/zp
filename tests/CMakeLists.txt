@@ -19,7 +19,6 @@ endfunction()
 create_test(dummy)
 create_test(testing_util_random)
 
-create_test(crc)
 create_test(serialization)
 create_test(encoding)
 create_test(message_header)
