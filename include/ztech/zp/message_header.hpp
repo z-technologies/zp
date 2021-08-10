@@ -12,7 +12,7 @@
 namespace ztech::zp {
 
 struct message_header {
-    static constexpr std::size_t size{15UL};
+    static constexpr std::size_t size{14UL};
     static constexpr std::size_t max_body_length{
         std::numeric_limits<std::uint32_t>::max()};
 
