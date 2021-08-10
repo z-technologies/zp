@@ -7,8 +7,7 @@ namespace ztech::zp::util::inline v1 {
 
 message_builder::message_builder(std::uint16_t type, std::uint16_t command,
                                  std::vector<std::uint8_t> body)
-    : header_{.version     = ztech::zp::v1::protocol_version,
-              .type        = type,
+    : header_{.type        = type,
               .command     = command,
               .flags       = ztech::zp::flags::none,
               .tag         = next_tag(),
@@ -21,12 +20,6 @@ message_builder::message_builder(std::uint16_t type, std::uint16_t command)
 }
 
 message_builder::message_builder() : message_builder{0, 0} {
-}
-
-auto message_builder::with_version(std::uint8_t version) noexcept
-    -> message_builder& {
-    header_.version = version;
-    return *this;
 }
 
 auto message_builder::with_type(std::uint16_t type) noexcept
