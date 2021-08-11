@@ -10,7 +10,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # project files
 set(SOURCE_FILES src/message_header.cpp
-                 src/message_builder.cpp)
+                 src/message_builder.cpp
+                 src/message.cpp)
 set(HEADER_FILES include/ztech/zp/flags.hpp
                  include/ztech/zp/message_header.hpp
                  include/ztech/zp/message.hpp
