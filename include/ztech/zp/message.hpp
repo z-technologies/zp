@@ -9,9 +9,9 @@
 namespace ztech::zp {
 
 class message {
+  public:
     using body_crc_type = std::uint32_t;
 
-  public:
     message(ztech::zp::message_header header, std::vector<std::uint8_t>&& body)
         : header_{header}, body_{std::move(body)} {
     }
