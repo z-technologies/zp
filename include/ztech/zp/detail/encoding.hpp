@@ -4,6 +4,7 @@
 #include "ztech/zp/message_header.hpp"
 
 #include <array>
+#include <cassert>
 #include <cstddef>
 #include <type_traits>
 #include <vector>
@@ -14,6 +15,14 @@ template <std::size_t i, typename T>
 requires std::is_unsigned_v<T>
 constexpr auto get_nth_byte(T value) -> std::uint8_t {
     static_assert(i < sizeof(T));
+
+    return (value >> (8 * (sizeof(T) - i - 1))) & 0xFF;
+}
+
+template <typename T>
+requires std::is_unsigned_v<T>
+constexpr auto get_nth_byte(T value, std::size_t i) -> std::uint8_t {
+    assert(i < sizeof(T));
 
     return (value >> (8 * (sizeof(T) - i - 1))) & 0xFF;
 }
