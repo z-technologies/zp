@@ -24,7 +24,6 @@ class crc_calculator final {
 
     inline void process(const uint8_t* buf, std::size_t len) {
         checksum_.process_bytes(buf, len);
-        boost::crc_32_type x;
     }
 
     inline void process(std::span<std::uint8_t> buf) {
@@ -32,7 +31,7 @@ class crc_calculator final {
     }
 
     inline void process(const std::vector<std::uint8_t>& buf) {
-        process(buf);
+        process(buf.data(), buf.size());
     }
 
     inline void process(const char* buf, std::size_t len) {
