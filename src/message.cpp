@@ -3,8 +3,6 @@
 #include "ztech/zp/detail/encoding.hpp"
 #include "ztech/zp/flags.hpp"
 
-#include <boost/endian.hpp>
-
 #include <cassert>
 #include <cstdint>
 #include <cstring>
@@ -25,9 +23,7 @@ auto message::flatten() const noexcept -> std::vector<std::uint8_t> {
         ztech::zp::flags::has_body_checksum) {
         ztech::zp::crc_calculator<body_crc_type> crc_calc{};
         crc_calc.process(body_);
-
-        const auto be_crc = boost::endian::native_to_big(crc_calc.value());
-        ztech::zp::detail::append_uint(be_crc, retbuf);
+        ztech::zp::detail::append_uint(crc_calc.value(), retbuf);
     }
 
     return retbuf;
