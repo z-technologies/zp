@@ -18,14 +18,11 @@ namespace ztech::zp::tests {
 TEST(MessageTests, FlattenTest) { // !NOLINT
     const auto test_type    = random<std::uint16_t>();
     const auto test_command = random<std::uint16_t>();
-    const auto test_flags =
-        static_cast<ztech::zp::flags>(random<std::uint16_t>());
-    const auto test_tag = random<std::uint16_t>();
+    const auto test_tag     = random<std::uint16_t>();
 
     const auto message = message_builder{}
                              .with_type(test_type)
                              .with_command(test_command)
-                             .with_flags(test_flags)
                              .with_tag(test_tag)
                              .build();
 

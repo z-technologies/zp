@@ -1,6 +1,5 @@
 #include "ztech/zp/message.hpp"
 #include "ztech/zp/detail/encoding.hpp"
-#include "ztech/zp/flags.hpp"
 
 #include <cassert>
 #include <cstdint>

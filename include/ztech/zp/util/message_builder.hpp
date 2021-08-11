@@ -1,7 +1,6 @@
 #ifndef ZTECH_ZP_UTIL_MESSAGE_BUILDER_HPP
 #define ZTECH_ZP_UTIL_MESSAGE_BUILDER_HPP
 
-#include "ztech/zp/flags.hpp"
 #include "ztech/zp/message.hpp"
 #include "ztech/zp/message_header.hpp"
 #include "ztech/zp/util/serialization.hpp"
@@ -26,7 +25,6 @@ class message_builder {
     auto with_type(std::uint16_t type) noexcept -> message_builder&;
     auto with_command(std::uint16_t command) noexcept -> message_builder&;
     auto with_tag(std::uint32_t tag) noexcept -> message_builder&;
-    auto with_flags(ztech::zp::flags flags) noexcept -> message_builder&;
 
     auto with_body(const std::vector<std::uint8_t>& body) noexcept
         -> message_builder&;

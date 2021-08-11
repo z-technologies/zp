@@ -9,7 +9,6 @@ message_builder::message_builder(std::uint16_t type, std::uint16_t command,
                                  std::vector<std::uint8_t> body)
     : header_{.type        = type,
               .command     = command,
-              .flags       = ztech::zp::flags::none,
               .tag         = next_tag(),
               .body_length = 0U},
       body_{std::move(body)} {
@@ -36,12 +35,6 @@ auto message_builder::with_command(std::uint16_t command) noexcept
 
 auto message_builder::with_tag(std::uint32_t tag) noexcept -> message_builder& {
     header_.tag = tag;
-    return *this;
-}
-
-auto message_builder::with_flags(ztech::zp::flags flags) noexcept
-    -> message_builder& {
-    header_.flags = flags;
     return *this;
 }
 
