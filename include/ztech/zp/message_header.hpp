@@ -23,14 +23,11 @@ struct message_header {
     std::uint32_t    body_length;
 
     void encode(std::array<std::uint8_t, size>& buf) const noexcept;
-};
+    void encode(std::vector<std::uint8_t>& buf) const noexcept;
 
-static_assert(message_header::size ==
-              (sizeof(std::declval<message_header>().type) +
-               sizeof(std::declval<message_header>().command) +
-               sizeof(std::declval<message_header>().tag) +
-               sizeof(std::declval<message_header>().flags) +
-               sizeof(std::declval<message_header>().body_length)));
+    static_assert(size == (sizeof(type) + sizeof(command) + sizeof(tag) +
+                           sizeof(flags) + sizeof(body_length)));
+};
 
 } // namespace ztech::zp
 
