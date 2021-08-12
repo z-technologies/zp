@@ -90,6 +90,18 @@ auto random(T min = std::numeric_limits<T>::min(),
     }
 }
 
+template <typename T, std::size_t count>
+requires std::is_integral_v<T> || std::is_floating_point_v<T>
+auto random_vector() -> std::vector<T> {
+    std::vector<T> ret{};
+
+    for (std::size_t i{0}; i < count; ++i) {
+        ret.emplace_back(random<T>());
+    }
+
+    return ret;
+}
+
 } // namespace ztech::zp::tests::util
 
 #endif
