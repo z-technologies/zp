@@ -16,17 +16,18 @@ template <std::uint8_t version, bool is_request>
 struct message_body_builder {
     explicit message_body_builder(
         ztech::zp::message_header<version, is_request> header)
-        : header_{std::move(header)} {
+        : header_{header} {
     }
 
     message_body_builder(ztech::zp::message_header<version, is_request> header,
                          std::vector<std::uint8_t>&&                    body)
-        : header_{std::move(header)}, body_{std::move(body)} {
+        : header_{header}, body_{std::move(body)} {
     }
 
     [[nodiscard]] inline auto build()
         -> ztech::zp::message<version, is_request> {
-        return {std::move(header_), std::move(body_)};
+        header_.body_length = body_.size();
+        return {header_, std::move(body_)};
     }
 
   private:
@@ -42,28 +43,38 @@ struct message_header_builder {
               .type = type, .command = command, .tag = tag, .body_length = 0U} {
     }
 
-    template <typename BodyContainer>
-    [[nodiscard]] auto with_body(BodyContainer&& body)
+    [[nodiscard]] inline auto with_body(std::vector<std::uint8_t> body)
         -> message_body_builder<version, is_request> {
-        return message_body_builder<version, is_request>{
-            std::move(header_), std::forward<BodyContainer>(body)};
+        return message_body_builder<version, is_request>{header_,
+                                                         std::move(body)};
+    }
+
+    [[nodiscard]] inline auto with_body(std::vector<std::uint8_t>&& body)
+        -> message_body_builder<version, is_request> {
+        return message_body_builder<version, is_request>{header_,
+                                                         std::move(body)};
     }
 
   private:
     ztech::zp::message_header<version, is_request> header_{};
 };
 
+template <std::uint8_t version, bool is_request, typename... Arg>
+[[nodiscard]] auto make_message_builder(Arg&&... args) {
+    return message_header_builder<version, true>(std::forward<Arg>(args)...);
+}
+
 template <std::uint8_t version>
 [[nodiscard]] auto make_request_builder(std::uint16_t type,
                                         std::uint16_t command,
                                         std::uint32_t tag) {
-    return message_header_builder<version, true>(type, command, tag);
+    return make_message_builder<version, true>(type, command, tag);
 }
 
 template <std::uint8_t version>
 [[nodiscard]] auto
 make_response_builder(const ztech::zp::request<version>& req) {
-    return message_header_builder<version, false>(
+    return make_message_builder<version, false>(
         req.header().type, req.header().command, req.header().tag);
 }
 
