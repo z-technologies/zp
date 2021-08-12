@@ -10,7 +10,6 @@
 namespace ztech::zp {
 
 template <std::uint8_t version, bool is_request>
-requires is_valid_protocol_version<version>
 class message {
     using header_type = ztech::zp::message_header<version, is_request>;
 
@@ -45,6 +44,12 @@ class message {
     header_type               header_;
     std::vector<std::uint8_t> body_;
 };
+
+template <std::uint8_t version>
+using request = message<version, true>;
+
+template <std::uint8_t version>
+using response = message<version, false>;
 
 } // namespace ztech::zp
 
