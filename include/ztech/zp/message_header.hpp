@@ -19,26 +19,18 @@ concept is_valid_protocol_version = requires {
 template <std::uint8_t protocol_version, bool request>
 requires is_valid_protocol_version<protocol_version>
 struct message_header {
-    static constexpr std::size_t size{13UL};
-    static constexpr std::size_t max_body_length{
-        std::numeric_limits<std::uint32_t>::max()};
+    static constexpr auto size       = 13UL;
+    static constexpr auto version    = protocol_version;
+    static constexpr auto is_request = request;
 
     std::uint16_t type;
     std::uint16_t command;
     std::uint32_t tag;
     std::uint32_t body_length;
 
-    [[nodiscard]] constexpr auto version() const noexcept -> std::uint8_t {
-        return protocol_version;
-    }
-
-    [[nodiscard]] constexpr auto is_request() const noexcept -> bool {
-        return request;
-    }
-
     void encode(std::array<std::uint8_t, size>& buf) const noexcept {
         constexpr std::size_t version_offset{0UL};
-        constexpr std::size_t type_offset{version_offset + sizeof(version())};
+        constexpr std::size_t type_offset{version_offset + sizeof(version)};
         constexpr std::size_t command_offset{type_offset + sizeof(type)};
         constexpr std::size_t tag_offset{command_offset + sizeof(command)};
         constexpr std::size_t body_length_offset{tag_offset + sizeof(tag)};
@@ -66,7 +58,7 @@ struct message_header {
     }
 
     static constexpr auto get_version_request_byte() -> std::uint8_t {
-        return (protocol_version << 1U) | (request ? 1U : 0U);
+        return (version << 1U) | (is_request ? 1U : 0U);
     }
 
     static_assert(size == (1U + sizeof(type) + sizeof(command) + sizeof(tag) +
