@@ -8,64 +8,64 @@
 #include <atomic>
 #include <cassert>
 #include <cstdint>
-#include <limits>
 #include <vector>
 
 namespace ztech::zp::util {
 
-class message_body_builder;
-
-class message_builder {
-  public:
-    message_builder(std::uint16_t type, std::uint16_t command,
-                    std::vector<std::uint8_t> body);
-    message_builder(std::uint16_t type, std::uint16_t command);
-    message_builder();
-
-    auto with_type(std::uint16_t type) noexcept -> message_builder&;
-    auto with_command(std::uint16_t command) noexcept -> message_builder&;
-    auto with_tag(std::uint32_t tag) noexcept -> message_builder&;
-
-    auto with_body(const std::vector<std::uint8_t>& body) noexcept
-        -> message_builder&;
-    auto with_body(std::vector<std::uint8_t>&& body) noexcept
-        -> message_builder&;
-
-    template <typename T>
-    auto with_body(const T& value) noexcept -> message_builder& {
-        body_.clear();
-        ztech::zp::util::serialize(body_, value);
-
-        assert(body_.size() <= ztech::zp::message_header::max_body_length);
-        header_.body_length = body_.size();
-
-        return *this;
+template <std::uint8_t version, bool is_request>
+struct message_body_builder {
+    explicit message_body_builder(
+        ztech::zp::message_header<version, is_request> header)
+        : header_{std::move(header)} {
     }
 
-    auto build() noexcept -> ztech::zp::message;
+    message_body_builder(ztech::zp::message_header<version, is_request> header,
+                         std::vector<std::uint8_t>&&                    body)
+        : header_{std::move(header)}, body_{std::move(body)} {
+    }
+
+    [[nodiscard]] inline auto build()
+        -> ztech::zp::message<version, is_request> {
+        return {std::move(header_), std::move(body_)};
+    }
 
   private:
-    template <
-        typename T = decltype(std::declval<ztech::zp::message_header>().tag)>
-    [[nodiscard]] static inline auto next_tag() noexcept -> T {
-        using limits = std::numeric_limits<T>;
+    ztech::zp::message_header<version, is_request> header_{};
+    std::vector<std::uint8_t>                      body_;
+};
 
-        static std::atomic<T> current_tag{};
-
-        const auto ret = current_tag.load();
-
-        if (current_tag == limits::max()) {
-            current_tag = limits::min();
-        } else {
-            ++current_tag;
-        }
-
-        return ret;
+template <std::uint8_t version, bool is_request>
+struct message_header_builder {
+    message_header_builder(std::uint16_t type, std::uint16_t command,
+                           std::uint32_t tag)
+        : header_{
+              .type = type, .command = command, .tag = tag, .body_length = 0U} {
     }
 
-    ztech::zp::message_header header_{};
-    std::vector<std::uint8_t> body_;
+    template <typename BodyContainer>
+    [[nodiscard]] auto with_body(BodyContainer&& body)
+        -> message_body_builder<version, is_request> {
+        return message_body_builder<version, is_request>{
+            std::move(header_), std::forward<BodyContainer>(body)};
+    }
+
+  private:
+    ztech::zp::message_header<version, is_request> header_{};
 };
+
+template <std::uint8_t version>
+[[nodiscard]] auto make_request_builder(std::uint16_t type,
+                                        std::uint16_t command,
+                                        std::uint32_t tag) {
+    return message_header_builder<version, true>(type, command, tag);
+}
+
+template <std::uint8_t version>
+[[nodiscard]] auto
+make_response_builder(const ztech::zp::request<version>& req) {
+    return message_header_builder<version, false>(
+        req.header().type, req.header().command, req.header().tag);
+}
 
 } // namespace ztech::zp::util
 
