@@ -11,6 +11,8 @@
 
 namespace ztech::zp {
 
+constexpr std::size_t message_header_size{13UL};
+
 template <std::uint8_t version>
 concept is_valid_protocol_version = requires {
     version < 0x7F;
@@ -19,7 +21,6 @@ concept is_valid_protocol_version = requires {
 template <std::uint8_t protocol_version, bool request>
 requires is_valid_protocol_version<protocol_version>
 struct message_header {
-    static constexpr auto size       = 13UL;
     static constexpr auto version    = protocol_version;
     static constexpr auto is_request = request;
 
@@ -28,7 +29,8 @@ struct message_header {
     std::uint32_t tag;
     std::uint32_t body_length;
 
-    void encode(std::array<std::uint8_t, size>& buf) const noexcept {
+    void
+    encode(std::array<std::uint8_t, message_header_size>& buf) const noexcept {
         constexpr std::size_t version_offset{0UL};
         constexpr std::size_t type_offset{version_offset + sizeof(version)};
         constexpr std::size_t command_offset{type_offset + sizeof(type)};
@@ -61,8 +63,8 @@ struct message_header {
         return (version << 1U) | (is_request ? 1U : 0U);
     }
 
-    static_assert(size == (1U + sizeof(type) + sizeof(command) + sizeof(tag) +
-                           sizeof(body_length)));
+    static_assert(message_header_size == (1U + sizeof(type) + sizeof(command) +
+                                          sizeof(tag) + sizeof(body_length)));
 };
 
 } // namespace ztech::zp
