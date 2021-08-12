@@ -9,12 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # project files
-set(SOURCE_FILES src/message_builder.cpp
-                 src/message.cpp)
-set(HEADER_FILES include/ztech/zp/message_header.hpp
-                 include/ztech/zp/message.hpp
-                 include/ztech/zp/util/serialization.hpp
-                 include/ztech/zp/util/message_builder.hpp)
+set(SOURCE_FILES src/dummy.cpp)
 include_directories(include/)
 
 ## external dependencies
@@ -30,7 +25,7 @@ add_subdirectory(lib/googletest)
 add_subdirectory(lib/fmt)
 
 # targets
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME} msgpackcxx fmt::fmt)
 
