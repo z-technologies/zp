@@ -1,8 +1,6 @@
 #ifndef ZTECH_ZP_DETAIL_ENCODING_HPP
 #define ZTECH_ZP_DETAIL_ENCODING_HPP
 
-#include "ztech/zp/message_header.hpp"
-
 #include <array>
 #include <cassert>
 #include <cstddef>
