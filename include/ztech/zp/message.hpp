@@ -4,20 +4,25 @@
 #include "ztech/zp/message_header.hpp"
 
 #include <cstdint>
+#include <type_traits>
 #include <vector>
 
 namespace ztech::zp {
 
+template <std::uint8_t version, bool is_request>
+requires is_valid_protocol_version<version>
 class message {
+    using header_type = ztech::zp::message_header<version, is_request>;
+
   public:
     using body_crc_type = std::uint32_t;
 
-    message(ztech::zp::message_header header, std::vector<std::uint8_t>&& body)
+    message(header_type header, std::vector<std::uint8_t>&& body)
         : header_{header}, body_{std::move(body)} {
+        assert(header_.body_length == body_.size());
     }
 
-    [[nodiscard]] inline auto header() const noexcept
-        -> const ztech::zp::message_header& {
+    [[nodiscard]] inline auto header() const noexcept -> const header_type& {
         return header_;
     }
 
@@ -26,10 +31,18 @@ class message {
         return body_;
     }
 
-    [[nodiscard]] auto flatten() const noexcept -> std::vector<std::uint8_t>;
+    [[nodiscard]] auto flatten() const noexcept -> std::vector<std::uint8_t> {
+        std::vector<std::uint8_t> retbuf{};
+
+        header_.encode(retbuf);
+        std::copy(std::cbegin(body_), std::cend(body_),
+                  std::back_inserter<>(retbuf));
+
+        return retbuf;
+    }
 
   private:
-    ztech::zp::message_header header_;
+    header_type               header_;
     std::vector<std::uint8_t> body_;
 };
 
