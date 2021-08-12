@@ -14,8 +14,6 @@ class message {
     using header_type = ztech::zp::message_header<version, is_request>;
 
   public:
-    using body_crc_type = std::uint32_t;
-
     message(header_type header, std::vector<std::uint8_t>&& body)
         : header_{header}, body_{std::move(body)} {
         assert(header_.body_length == body_.size());
