@@ -14,12 +14,12 @@
 namespace ztech::zp::tests::util {
 
 enum class random_string_options : std::uint32_t {
-    alpha      = 1,
-    num        = 2,
-    sym        = 4,
+    alpha      = 1U << 0U,
+    num        = 1U << 1U,
+    sym        = 1U << 2U,
+    lower_case = 1U << 3U,
+    upper_case = 1U << 4U,
     alphanum   = alpha | num,
-    lower_case = 8,
-    upper_case = 16,
     mixed_case = lower_case | upper_case,
     mixed      = alpha | num | lower_case | upper_case | sym,
 };
