@@ -25,7 +25,7 @@ struct message_header {
     static constexpr auto is_request = request;
 
     std::uint16_t type;
-    std::uint16_t command;
+    std::uint16_t extra;
     std::uint32_t tag;
     std::uint32_t body_length;
 
@@ -33,20 +33,20 @@ struct message_header {
     encode(std::array<std::uint8_t, message_header_size>& buf) const noexcept {
         constexpr std::size_t version_offset{0UL};
         constexpr std::size_t type_offset{version_offset + sizeof(version)};
-        constexpr std::size_t command_offset{type_offset + sizeof(type)};
-        constexpr std::size_t tag_offset{command_offset + sizeof(command)};
+        constexpr std::size_t extra_offset{type_offset + sizeof(type)};
+        constexpr std::size_t tag_offset{extra_offset + sizeof(extra)};
         constexpr std::size_t body_length_offset{tag_offset + sizeof(tag)};
 
         static_assert(version_offset == 0UL);
         static_assert(type_offset == 1UL);
-        static_assert(command_offset == 3UL);
+        static_assert(extra_offset == 3UL);
         static_assert(tag_offset == 5UL);
         static_assert(body_length_offset == 9UL);
 
         ztech::zp::detail::write_uint<version_offset>(
             get_version_request_byte(), buf);
         ztech::zp::detail::write_uint<type_offset>(type, buf);
-        ztech::zp::detail::write_uint<command_offset>(command, buf);
+        ztech::zp::detail::write_uint<extra_offset>(extra, buf);
         ztech::zp::detail::write_uint<tag_offset>(tag, buf);
         ztech::zp::detail::write_uint<body_length_offset>(body_length, buf);
     }
@@ -54,7 +54,7 @@ struct message_header {
     void encode(std::vector<std::uint8_t>& buf) const noexcept {
         ztech::zp::detail::append_uint(get_version_request_byte(), buf);
         ztech::zp::detail::append_uint(type, buf);
-        ztech::zp::detail::append_uint(command, buf);
+        ztech::zp::detail::append_uint(extra, buf);
         ztech::zp::detail::append_uint(tag, buf);
         ztech::zp::detail::append_uint(body_length, buf);
     }
@@ -63,7 +63,7 @@ struct message_header {
         return (version << 1U) | (is_request ? 1U : 0U);
     }
 
-    static_assert(message_header_size == (1U + sizeof(type) + sizeof(command) +
+    static_assert(message_header_size == (1U + sizeof(type) + sizeof(extra) +
                                           sizeof(tag) + sizeof(body_length)));
 };
 
