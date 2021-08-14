@@ -3,10 +3,7 @@
 
 #include "ztech/zp/message.hpp"
 #include "ztech/zp/message_header.hpp"
-#include "ztech/zp/util/serialization.hpp"
 
-#include <atomic>
-#include <cassert>
 #include <cstdint>
 #include <vector>
 
@@ -37,10 +34,9 @@ struct message_body_builder {
 
 template <std::uint8_t version, bool is_request>
 struct message_header_builder {
-    message_header_builder(std::uint16_t type, std::uint16_t command,
+    message_header_builder(std::uint16_t type, std::uint16_t extra,
                            std::uint32_t tag)
-        : header_{
-              .type = type, .command = command, .tag = tag, .body_length = 0U} {
+        : header_{.type = type, .extra = extra, .tag = tag, .body_length = 0U} {
     }
 
     [[nodiscard]] inline auto with_body(std::vector<std::uint8_t> body)
@@ -65,17 +61,16 @@ template <std::uint8_t version, bool is_request, typename... Arg>
 }
 
 template <std::uint8_t version>
-[[nodiscard]] auto make_request_builder(std::uint16_t type,
-                                        std::uint16_t command,
+[[nodiscard]] auto make_request_builder(std::uint16_t type, std::uint16_t extra,
                                         std::uint32_t tag) {
-    return make_message_builder<version, true>(type, command, tag);
+    return make_message_builder<version, true>(type, extra, tag);
 }
 
 template <std::uint8_t version>
 [[nodiscard]] auto
 make_response_builder(const ztech::zp::request<version>& req) {
     return make_message_builder<version, false>(
-        req.header().type, req.header().command, req.header().tag);
+        req.header().type, req.header().extra, req.header().tag);
 }
 
 } // namespace ztech::zp::util

@@ -15,14 +15,14 @@ using namespace ztech::zp::tests::util;
 namespace {
 template <std::uint8_t version, bool is_request>
 void test_message() {
-    const auto test_type    = random<std::uint16_t>();
-    const auto test_command = random<std::uint16_t>();
-    const auto test_tag     = random<std::uint16_t>();
+    const auto test_type  = random<std::uint16_t>();
+    const auto test_extra = random<std::uint16_t>();
+    const auto test_tag   = random<std::uint16_t>();
 
     auto test_body = random_vector<std::uint8_t, 0xFF>();
     ztech::zp::message_header<version, is_request> header{
         .type        = test_type,
-        .command     = test_command,
+        .extra       = test_extra,
         .tag         = test_tag,
         .body_length = static_cast<std::uint32_t>(test_body.size())};
 

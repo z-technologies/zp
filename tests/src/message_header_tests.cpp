@@ -19,9 +19,9 @@ constexpr std::array<std::uint8_t, ::header_size> test_header_bytes{
     0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
     0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD};
 
-const ztech::zp::message_header<0x08, true> test_header{.type    = 0x2233,
-                                                        .command = 0x4455,
-                                                        .tag     = 0x66778899,
+const ztech::zp::message_header<0x08, true> test_header{.type  = 0x2233,
+                                                        .extra = 0x4455,
+                                                        .tag   = 0x66778899,
                                                         .body_length =
                                                             0xAABBCCDD};
 
