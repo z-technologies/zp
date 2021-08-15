@@ -20,8 +20,7 @@ void test_message_builder() {
 
     const auto msg = ztech::zp::util::make_message_builder<version, is_request>(
                          test_type, test_extra, test_tag)
-                         .with_body(test_body)
-                         .build();
+                         .build(test_body);
 
     EXPECT_EQ(msg.header().type, test_type);
     EXPECT_EQ(msg.header().extra, test_extra);
