@@ -1,10 +1,7 @@
 #ifndef ZTECH_ZP_TESTS_UTIL_RANDOM_HPP
 #define ZTECH_ZP_TESTS_UTIL_RANDOM_HPP
 
-#include "fmt/format.h"
-
 #include <algorithm>
-#include <chrono>
 #include <cstddef>
 #include <limits>
 #include <random>
@@ -47,31 +44,31 @@ auto random_string(std::size_t len, random_string_options opts) -> std::string {
     if ((opts & random_string_options::alpha) != 0U) {
         if (((opts & random_string_options::lower_case) == 0U) &&
             ((opts & random_string_options::upper_case) == 0U)) {
-            fmt::format_to(std::back_inserter(pool), lower_case_alpha);
+            pool.append(lower_case_alpha);
         } else {
             if ((opts & random_string_options::lower_case) != 0U) {
-                fmt::format_to(std::back_inserter(pool), lower_case_alpha);
+                pool.append(lower_case_alpha);
             }
 
             if ((opts & random_string_options::upper_case) != 0U) {
-                fmt::format_to(std::back_inserter(pool), upper_case_alpha);
+                pool.append(upper_case_alpha);
             }
         }
     }
 
     if ((opts & random_string_options::num) != 0U) {
-        fmt::format_to(std::back_inserter(pool), num);
+        pool.append(num);
     }
 
     if ((opts & random_string_options::sym) != 0U) {
-        fmt::format_to(std::back_inserter(pool), sym);
+        pool.append(sym);
     }
 
     std::shuffle(pool.begin(), pool.end(), rng);
     std::uniform_int_distribution<std::size_t> dist{0, pool.size() - 1};
 
     while ((len--) != 0U) {
-        fmt::format_to(std::back_inserter(ret), "{}", pool[dist(rng)]);
+        ret.push_back(pool[dist(rng)]);
     }
 
     return ret;

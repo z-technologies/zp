@@ -20,13 +20,11 @@ add_definitions(-DMSGPACK_USE_BOOST -DMSGPACK_BUILD_EXAMPLES=OFF -DMSGPACK_CXX17
 add_subdirectory(lib/msgpack-c)
 # googletest
 add_subdirectory(lib/googletest)
-# fmt
-add_subdirectory(lib/fmt)
 
 # targets
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} PUBLIC INTERFACE include)
-target_link_libraries(${PROJECT_NAME} INTERFACE msgpackcxx fmt::fmt)
+target_link_libraries(${PROJECT_NAME} INTERFACE msgpackcxx)
 
 # testing
 enable_testing()
