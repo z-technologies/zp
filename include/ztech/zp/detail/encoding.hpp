@@ -106,6 +106,22 @@ void append_uint(T value, std::vector<std::uint8_t>& buf) {
     }
 }
 
+/*!
+ * \brief Decodes an integeral value of type \p T, into \p out from the buffer
+ *        \p buf
+ *
+ * \tparam offset     The index from which to start decoding the bytes of
+ *                    \p value
+ * \tparam T          The type of the value to be decoded. This type has to be
+ *                    of an unsigned integeral type
+ * \tparam array_size The size of the buffer \p buf into which to decode the
+ *                    value from
+ * \tparam i          The current index into which to write the current byte
+ *
+ * \param[in] buf   The buffer from which to decode the value \p out
+ * \param[in] value A reference to an output variable into which to write the
+ *                  the decoded value
+ */
 template <std::size_t offset, typename T, std::size_t array_size,
           std::size_t i = 0>
 requires std::is_unsigned_v<T>
@@ -118,9 +134,25 @@ void decode_uint(const std::array<std::uint8_t, array_size>& buf, T& out) {
     if constexpr (i < sizeof(T) - 1) {
         out <<= 8U;
         decode_uint<offset, T, array_size, i + 1>(buf, out);
-    } 
+    }
 }
 
+/*!
+ * \brief Decodes an integeral value of type \p T, into \p out from the buffer
+ *        \p buf
+ *
+ * \tparam offset     The index from which to start decoding the bytes of
+ *                    \p value
+ * \tparam T          The type of the value to be decoded. This type has to be
+ *                    of an unsigned integeral type
+ * \tparam array_size The size of the buffer \p buf into which to decode the
+ *                    value from
+ * \tparam i          The current index into which to write the current byte
+ *
+ * \param[in] buf   The buffer from which to decode the value \p out
+ * \param[in] value A reference to an output variable into which to write the
+ *                  the decoded value
+ */
 template <std::size_t offset, typename T, std::size_t i = 0>
 requires std::is_unsigned_v<T>
 void decode_uint(const std::vector<std::uint8_t>& buf, T& out) {

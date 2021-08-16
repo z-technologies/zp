@@ -105,6 +105,13 @@ struct message_header {
         ztech::zp::detail::append_uint(body_length, buf);
     }
 
+    /*!
+     * \brief Decodes a header from the buffer \p buf
+     *
+     * \param[in] buf  The buffer from which to decode the header
+     *
+     * \return The decoded header
+     */
     static auto decode(const std::array<std::uint8_t, message_header_size>& buf)
         -> message_header<version, is_request> {
         assert((buf[0] >> 1U) == version);
@@ -120,6 +127,13 @@ struct message_header {
         return ret;
     }
 
+    /*!
+     * \brief Decodes a header from the buffer \p buf
+     *
+     * \param[in] buf  The buffer from which to decode the header
+     *
+     * \return The decoded header
+     */
     static auto decode(const std::vector<std::uint8_t>& buf)
         -> message_header<version, is_request> {
         assert(buf.size() >= message_header_size);
