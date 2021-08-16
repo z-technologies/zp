@@ -3,14 +3,11 @@
 
 #include "gtest/gtest.h"
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstring>
 #include <vector>
-
-#include <algorithm>
-#include <iomanip>
-#include <iostream>
 
 namespace {
 
@@ -47,6 +44,28 @@ TEST(MessageHeaderTests, HeaderVectorEncodeTest) { // !NOLINT
     test_header.encode(buf);
 
     EXPECT_TRUE(::compare_containers(test_header_bytes, buf));
+}
+
+TEST(MessageHeaderTests, HeaderArrayDecodeTest) { // !NOLINT
+    const auto header = decltype(test_header)::decode(test_header_bytes);
+
+    EXPECT_EQ(header.type, test_header.type);
+    EXPECT_EQ(header.extra, test_header.extra);
+    EXPECT_EQ(header.tag, test_header.tag);
+    EXPECT_EQ(header.body_length, test_header.body_length);
+}
+
+TEST(MessageHeaderTests, HeaderVectorDecodeTest) { // !NOLINT
+    std::vector<std::uint8_t> buf{};
+    std::copy(std::cbegin(test_header_bytes), std::cend(test_header_bytes),
+              std::back_inserter<>(buf));
+
+    const auto header = decltype(test_header)::decode(buf);
+
+    EXPECT_EQ(header.type, test_header.type);
+    EXPECT_EQ(header.extra, test_header.extra);
+    EXPECT_EQ(header.tag, test_header.tag);
+    EXPECT_EQ(header.body_length, test_header.body_length);
 }
 
 } // namespace ztech::zp::tests
