@@ -82,18 +82,6 @@ struct message_header {
      */
     void
     encode(std::array<std::uint8_t, message_header_size>& buf) const noexcept {
-        constexpr std::size_t version_offset{0UL};
-        constexpr std::size_t type_offset{version_offset + sizeof(version)};
-        constexpr std::size_t extra_offset{type_offset + sizeof(type)};
-        constexpr std::size_t tag_offset{extra_offset + sizeof(extra)};
-        constexpr std::size_t body_length_offset{tag_offset + sizeof(tag)};
-
-        static_assert(version_offset == 0UL);
-        static_assert(type_offset == 1UL);
-        static_assert(extra_offset == 3UL);
-        static_assert(tag_offset == 5UL);
-        static_assert(body_length_offset == 9UL);
-
         ztech::zp::detail::write_uint<version_offset>(get_first_byte(), buf);
         ztech::zp::detail::write_uint<type_offset>(type, buf);
         ztech::zp::detail::write_uint<extra_offset>(extra, buf);
@@ -117,13 +105,56 @@ struct message_header {
         ztech::zp::detail::append_uint(body_length, buf);
     }
 
-    static_assert(message_header_size == (1U + sizeof(type) + sizeof(extra) +
-                                          sizeof(tag) + sizeof(body_length)));
+    static auto decode(const std::array<std::uint8_t, message_header_size>& buf)
+        -> message_header<version, is_request> {
+        assert((buf[0] >> 1U) == version);
+        assert((buf[0] & 1U) == (is_request ? 1 : 0));
+
+        message_header<version, is_request> ret{};
+        ztech::zp::detail::decode_uint<type_offset>(buf, ret.type);
+        ztech::zp::detail::decode_uint<extra_offset>(buf, ret.extra);
+        ztech::zp::detail::decode_uint<tag_offset>(buf, ret.tag);
+        ztech::zp::detail::decode_uint<body_length_offset>(buf,
+                                                           ret.body_length);
+
+        return ret;
+    }
+
+    static auto decode(const std::vector<std::uint8_t>& buf)
+        -> message_header<version, is_request> {
+        assert(buf.size() >= message_header_size);
+        assert((buf[0] >> 1U) == version);
+        assert((buf[0] & 1U) == (is_request ? 1 : 0));
+
+        message_header<version, is_request> ret{};
+        ztech::zp::detail::decode_uint<type_offset>(buf, ret.type);
+        ztech::zp::detail::decode_uint<extra_offset>(buf, ret.extra);
+        ztech::zp::detail::decode_uint<tag_offset>(buf, ret.tag);
+        ztech::zp::detail::decode_uint<body_length_offset>(buf,
+                                                           ret.body_length);
+
+        return ret;
+    }
+
+    static constexpr std::size_t version_offset{0UL};
+    static constexpr std::size_t type_offset{version_offset + sizeof(version)};
+    static constexpr std::size_t extra_offset{type_offset + sizeof(type)};
+    static constexpr std::size_t tag_offset{extra_offset + sizeof(extra)};
+    static constexpr std::size_t body_length_offset{tag_offset + sizeof(tag)};
 
   private:
     static constexpr auto get_first_byte() -> std::uint8_t {
         return (version << 1U) | (is_request ? 1U : 0U);
     }
+
+    static_assert(message_header_size == (1U + sizeof(type) + sizeof(extra) +
+                                          sizeof(tag) + sizeof(body_length)));
+
+    static_assert(version_offset == 0UL);
+    static_assert(type_offset == 1UL);
+    static_assert(extra_offset == 3UL);
+    static_assert(tag_offset == 5UL);
+    static_assert(body_length_offset == 9UL);
 };
 
 } // namespace ztech::zp
