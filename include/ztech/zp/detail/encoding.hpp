@@ -106,6 +106,35 @@ void append_uint(T value, std::vector<std::uint8_t>& buf) {
     }
 }
 
+template <std::size_t offset, typename T, std::size_t array_size,
+          std::size_t i = 0>
+requires std::is_unsigned_v<T>
+void decode_uint(const std::array<std::uint8_t, array_size>& buf, T& out) {
+    static_assert(i < sizeof(T));
+    static_assert(offset + i + 1 <= array_size);
+
+    out |= buf[offset + i];
+
+    if constexpr (i < sizeof(T) - 1) {
+        out <<= 8U;
+        decode_uint<offset, T, array_size, i + 1>(buf, out);
+    } 
+}
+
+template <std::size_t offset, typename T, std::size_t i = 0>
+requires std::is_unsigned_v<T>
+void decode_uint(const std::vector<std::uint8_t>& buf, T& out) {
+    static_assert(i < sizeof(T));
+    assert(buf.size() >= offset + sizeof(T));
+
+    out |= buf[offset + i];
+
+    if constexpr (i < sizeof(T) - 1) {
+        out <<= 8U;
+        decode_uint<offset, T, i + 1>(buf, out);
+    }
+}
+
 } // namespace ztech::zp::detail
 
 #endif
