@@ -12,7 +12,7 @@ namespace ztech::zp {
 /*!
  * \brief A class to represent messages headers.
  */
-struct message_header {
+struct message_header final {
     //! \brief The size of the message header in bytes
 
     /*!
