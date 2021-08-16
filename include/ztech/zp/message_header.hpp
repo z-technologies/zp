@@ -9,39 +9,11 @@
 
 namespace ztech::zp {
 
-//! \brief The size of the message header in bytes
-constexpr std::size_t message_header_size{13UL};
-
-/*!
- * \brief A concept to check that a protocol version value is valid.
- *
- * Protocol version values must be less than or equal to 127 (0b01111111) in
- * binary. This is a requirement because the last bit in the first byte of the
- * message is used to store whether the message resembles a request (1) or a
- * response (0).
- *
- * \tparam version  The protocol version value to be checked
- */
-template <std::uint8_t version>
-concept is_valid_protocol_version = requires {
-    version < 0x7F;
-};
-
 /*!
  * \brief A class to represent messages headers.
- *
- * This class can represent either a request or a response depending on
- * \p request value.
- *
- * \tparam protocol_version The protocol version the message belongs to
- * \tparam request          If true, the class represents a request, otherwise,
- *                          the class represents a response
  */
-template <std::uint8_t protocol_version, bool request>
-requires is_valid_protocol_version<protocol_version>
 struct message_header {
-    static constexpr auto version    = protocol_version;
-    static constexpr auto is_request = request;
+    //! \brief The size of the message header in bytes
 
     /*!
      * \brief The type of the message.
@@ -72,6 +44,12 @@ struct message_header {
      */
     std::uint32_t body_length;
 
+    static constexpr std::size_t type_offset{0UL};
+    static constexpr std::size_t extra_offset{type_offset + sizeof(type)};
+    static constexpr std::size_t tag_offset{extra_offset + sizeof(extra)};
+    static constexpr std::size_t body_length_offset{tag_offset + sizeof(tag)};
+    static constexpr std::size_t size{body_length_offset + sizeof(body_length)};
+
     /*!
      * \brief Encodes the header fields into a fixed-sized buffer, \p buf.
      *
@@ -80,9 +58,7 @@ struct message_header {
      *
      * \param[out] buf The buffer into which to encode the header fields
      */
-    void
-    encode(std::array<std::uint8_t, message_header_size>& buf) const noexcept {
-        ztech::zp::detail::write_uint<version_offset>(get_first_byte(), buf);
+    void encode(std::array<std::uint8_t, size>& buf) const noexcept {
         ztech::zp::detail::write_uint<type_offset>(type, buf);
         ztech::zp::detail::write_uint<extra_offset>(extra, buf);
         ztech::zp::detail::write_uint<tag_offset>(tag, buf);
@@ -98,7 +74,6 @@ struct message_header {
      * \param[out] buf The buffer into which to encode the header fields
      */
     void encode(std::vector<std::uint8_t>& buf) const noexcept {
-        ztech::zp::detail::append_uint(get_first_byte(), buf);
         ztech::zp::detail::append_uint(type, buf);
         ztech::zp::detail::append_uint(extra, buf);
         ztech::zp::detail::append_uint(tag, buf);
@@ -109,66 +84,31 @@ struct message_header {
      * \brief Decodes a header from the buffer \p buf
      *
      * \param[in] buf  The buffer from which to decode the header
-     *
-     * \return The decoded header
      */
-    static auto decode(const std::array<std::uint8_t, message_header_size>& buf)
-        -> message_header<version, is_request> {
-        assert((buf[0] >> 1U) == version);
-        assert((buf[0] & 1U) == (is_request ? 1 : 0));
-
-        message_header<version, is_request> ret{};
-        ztech::zp::detail::decode_uint<type_offset>(buf, ret.type);
-        ztech::zp::detail::decode_uint<extra_offset>(buf, ret.extra);
-        ztech::zp::detail::decode_uint<tag_offset>(buf, ret.tag);
-        ztech::zp::detail::decode_uint<body_length_offset>(buf,
-                                                           ret.body_length);
-
-        return ret;
+    void decode(const std::array<std::uint8_t, size>& buf) {
+        ztech::zp::detail::decode_uint<type_offset>(buf, type);
+        ztech::zp::detail::decode_uint<extra_offset>(buf, extra);
+        ztech::zp::detail::decode_uint<tag_offset>(buf, tag);
+        ztech::zp::detail::decode_uint<body_length_offset>(buf, body_length);
     }
 
     /*!
      * \brief Decodes a header from the buffer \p buf
      *
      * \param[in] buf  The buffer from which to decode the header
-     *
-     * \return The decoded header
      */
-    static auto decode(const std::vector<std::uint8_t>& buf)
-        -> message_header<version, is_request> {
-        assert(buf.size() >= message_header_size);
-        assert((buf[0] >> 1U) == version);
-        assert((buf[0] & 1U) == (is_request ? 1 : 0));
-
-        message_header<version, is_request> ret{};
-        ztech::zp::detail::decode_uint<type_offset>(buf, ret.type);
-        ztech::zp::detail::decode_uint<extra_offset>(buf, ret.extra);
-        ztech::zp::detail::decode_uint<tag_offset>(buf, ret.tag);
-        ztech::zp::detail::decode_uint<body_length_offset>(buf,
-                                                           ret.body_length);
-
-        return ret;
+    void decode(const std::vector<std::uint8_t>& buf) {
+        ztech::zp::detail::decode_uint<type_offset>(buf, type);
+        ztech::zp::detail::decode_uint<extra_offset>(buf, extra);
+        ztech::zp::detail::decode_uint<tag_offset>(buf, tag);
+        ztech::zp::detail::decode_uint<body_length_offset>(buf, body_length);
     }
 
-    static constexpr std::size_t version_offset{0UL};
-    static constexpr std::size_t type_offset{version_offset + sizeof(version)};
-    static constexpr std::size_t extra_offset{type_offset + sizeof(type)};
-    static constexpr std::size_t tag_offset{extra_offset + sizeof(extra)};
-    static constexpr std::size_t body_length_offset{tag_offset + sizeof(tag)};
-
-  private:
-    static constexpr auto get_first_byte() -> std::uint8_t {
-        return (version << 1U) | (is_request ? 1U : 0U);
-    }
-
-    static_assert(message_header_size == (1U + sizeof(type) + sizeof(extra) +
-                                          sizeof(tag) + sizeof(body_length)));
-
-    static_assert(version_offset == 0UL);
-    static_assert(type_offset == 1UL);
-    static_assert(extra_offset == 3UL);
-    static_assert(tag_offset == 5UL);
-    static_assert(body_length_offset == 9UL);
+    static_assert(type_offset == 0UL);
+    static_assert(extra_offset == 2UL);
+    static_assert(tag_offset == 4UL);
+    static_assert(body_length_offset == 8UL);
+    static_assert(size == 12UL);
 };
 
 } // namespace ztech::zp

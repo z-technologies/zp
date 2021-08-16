@@ -7,20 +7,19 @@
 #include <algorithm>
 #include <cstdint>
 
-using namespace ztech::zp::tests::util;
+namespace ztech::zp::tests {
 
-namespace {
+TEST(MessageBuilderTests, TestMessageBuilder) { // !NOLINT
+    using namespace ztech::zp::tests::util;
+    using ztech::zp::util::message_builder;
 
-template <std::uint8_t version, bool is_request>
-void test_message_builder() {
     const auto test_type  = random<std::uint16_t>();
     const auto test_extra = random<std::uint16_t>();
     const auto test_tag   = random<std::uint16_t>();
     const auto test_body  = random_vector<std::uint8_t, 0xFF>();
 
-    const auto msg = ztech::zp::util::make_message_builder<version, is_request>(
-                         test_type, test_extra, test_tag)
-                         .build(test_body);
+    const auto msg =
+        message_builder{test_type, test_extra, test_tag}.build(test_body);
 
     EXPECT_EQ(msg.header().type, test_type);
     EXPECT_EQ(msg.header().extra, test_extra);
@@ -28,18 +27,6 @@ void test_message_builder() {
     EXPECT_EQ(msg.header().body_length, test_body.size());
     EXPECT_TRUE(std::equal(std::cbegin(test_body), std::cend(test_body),
                            std::cbegin(msg.body()), std::cend(msg.body())));
-}
-
-} // namespace
-
-namespace ztech::zp::tests {
-
-TEST(MessageBuilderTests, TestRequestMessageBuilder) { // !NOLINT
-    ::test_message_builder<0x07, true>();
-}
-
-TEST(MessageBuilderTests, TestResponseMessageBuilder) { // !NOLINT
-    ::test_message_builder<0x07, false>();
 }
 
 } // namespace ztech::zp::tests

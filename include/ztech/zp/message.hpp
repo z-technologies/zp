@@ -11,15 +11,8 @@ namespace ztech::zp {
 
 /*!
  * A class to represent a message
- *
- * \tparam protocol_version The protocol version the message belongs to
- * \tparam request          If true, the class represents a request, otherwise,
- *                          the class represents a response
  */
-template <std::uint8_t version, bool is_request>
 class message {
-    using header_type = ztech::zp::message_header<version, is_request>;
-
   public:
     /*!
      * \brief Default constructor
@@ -27,7 +20,7 @@ class message {
      * \param[in] header The message header
      * \param[in] body   The message body
      */
-    message(header_type header, std::vector<std::uint8_t>&& body)
+    message(ztech::zp::message_header header, std::vector<std::uint8_t>&& body)
         : header_{header}, body_{std::move(body)} {
         assert(header_.body_length == body_.size());
     }
@@ -36,7 +29,8 @@ class message {
      * \brief Gets the header of the message
      * \return A constant reference to the header of the message
      */
-    [[nodiscard]] inline auto header() const noexcept -> const header_type& {
+    [[nodiscard]] inline auto header() const noexcept
+        -> const ztech::zp::message_header& {
         return header_;
     }
 
@@ -65,23 +59,9 @@ class message {
     }
 
   private:
-    header_type               header_;
+    ztech::zp::message_header header_;
     std::vector<std::uint8_t> body_;
 };
-
-/*!
- * \brief An alias for a message of type request
- * \tparam version The protocol version the message belongs to
- */
-template <std::uint8_t version>
-using request = message<version, true>;
-
-/*!
- * \brief An alias for a message of type request
- * \tparam version The protocol version the message belongs to
- */
-template <std::uint8_t version>
-using response = message<version, false>;
 
 } // namespace ztech::zp
 
