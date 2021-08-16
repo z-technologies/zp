@@ -9,6 +9,7 @@
 #include <vector>
 
 using ztech::zp::detail::append_uint;
+using ztech::zp::detail::decode_uint;
 using ztech::zp::detail::get_nth_byte;
 using ztech::zp::detail::write_uint;
 using ztech::zp::tests::util::random;
@@ -68,6 +69,75 @@ TEST(EncodingTests, AppendUIntTest) { // !NOLINT
     append_uint(static_cast<std::uint64_t>(0x8899AABBCCDDEEFF), out_buf);
 
     ASSERT_EQ(0, std::memcmp(test_buf.data(), out_buf.data(), test_buf.size()));
+}
+
+TEST(EncodingTests, DecodeUIntArrayTest) { // !NOLINT
+    const std::uint8_t  u8_value{random<std::uint8_t>()};
+    const std::uint16_t u16_value{random<std::uint16_t>()};
+    const std::uint32_t u32_value{random<std::uint32_t>()};
+    const std::uint64_t u64_value{random<std::uint64_t>()};
+
+    constexpr auto u8_offset  = 0UL;
+    constexpr auto u16_offset = u8_offset + sizeof(u8_value);
+    constexpr auto u32_offset = u16_offset + sizeof(u16_value);
+    constexpr auto u64_offset = u32_offset + sizeof(u32_value);
+    constexpr auto buf_size   = u64_offset + sizeof(u64_value);
+
+    std::array<std::uint8_t, buf_size> buf{};
+
+    write_uint<u8_offset>(u8_value, buf);
+    write_uint<u16_offset>(u16_value, buf);
+    write_uint<u32_offset>(u32_value, buf);
+    write_uint<u64_offset>(u64_value, buf);
+
+    std::uint8_t  u8_extracted{};
+    std::uint16_t u16_extracted{};
+    std::uint32_t u32_extracted{};
+    std::uint64_t u64_extracted{};
+
+    decode_uint<u8_offset>(buf, u8_extracted);
+    decode_uint<u16_offset>(buf, u16_extracted);
+    decode_uint<u32_offset>(buf, u32_extracted);
+    decode_uint<u64_offset>(buf, u64_extracted);
+
+    EXPECT_EQ(u8_value, u8_extracted);
+    EXPECT_EQ(u16_value, u16_extracted);
+    EXPECT_EQ(u32_value, u32_extracted);
+    EXPECT_EQ(u64_value, u64_extracted);
+}
+
+TEST(EncodingTests, DecodeUIntVectorTest) { // !NOLINT
+    const std::uint8_t  u8_value{random<std::uint8_t>()};
+    const std::uint16_t u16_value{random<std::uint16_t>()};
+    const std::uint32_t u32_value{random<std::uint32_t>()};
+    const std::uint64_t u64_value{random<std::uint64_t>()};
+
+    constexpr auto u8_offset  = 0UL;
+    constexpr auto u16_offset = u8_offset + sizeof(u8_value);
+    constexpr auto u32_offset = u16_offset + sizeof(u16_value);
+    constexpr auto u64_offset = u32_offset + sizeof(u32_value);
+
+    std::vector<std::uint8_t> buf{};
+
+    append_uint(u8_value, buf);
+    append_uint(u16_value, buf);
+    append_uint(u32_value, buf);
+    append_uint(u64_value, buf);
+
+    std::uint8_t  u8_extracted{};
+    std::uint16_t u16_extracted{};
+    std::uint32_t u32_extracted{};
+    std::uint64_t u64_extracted{};
+
+    decode_uint<u8_offset>(buf, u8_extracted);
+    decode_uint<u16_offset>(buf, u16_extracted);
+    decode_uint<u32_offset>(buf, u32_extracted);
+    decode_uint<u64_offset>(buf, u64_extracted);
+
+    EXPECT_EQ(u8_value, u8_extracted);
+    EXPECT_EQ(u16_value, u16_extracted);
+    EXPECT_EQ(u32_value, u32_extracted);
+    EXPECT_EQ(u64_value, u64_extracted);
 }
 
 } // namespace ztech::zp::tests
