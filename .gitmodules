@@ -10,3 +10,6 @@
 [submodule "lib/zstd"]
 	path = lib/zstd
 	url = https://github.com/facebook/zstd
+[submodule "lib/lz4"]
+	path = lib/lz4
+	url = https://github.com/lz4/lz4
