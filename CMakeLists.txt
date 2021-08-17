@@ -21,7 +21,8 @@ include_directories(${Boost_INCLUDE_DIR}
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME} zp::msgpack
-                                      zp::zstd)
+                                      zp::zstd
+                                      zp::lz4)
 
 # testing
 enable_testing()

@@ -19,3 +19,7 @@ add_library(zp::gtest_main ALIAS gtest_main)
 # zstd
 add_subdirectory(zstd/build/cmake)
 add_library(zp::zstd ALIAS libzstd_static)
+
+# lz4
+add_subdirectory(lz4/build/cmake)
+add_library(zp::lz4 ALIAS lz4_static)
