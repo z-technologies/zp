@@ -12,24 +12,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SOURCE_FILES src/compress_zstd.cpp)
 include_directories(include/)
 
-## external dependencies
-# boost
-find_package(Boost)
-include_directories(${Boost_INCLUDE_DIR})
-# msgpack
-add_definitions(-DMSGPACK_USE_BOOST -DMSGPACK_BUILD_EXAMPLES=OFF -DMSGPACK_CXX17)
-add_subdirectory(lib/msgpack-c)
-# googletest
-add_subdirectory(lib/googletest)
-# zstd
-add_subdirectory(lib/zstd/build/cmake)
-include_directories(lib/zstd/lib)
+# external dependencies
+add_subdirectory(lib)
+include_directories(${Boost_INCLUDE_DIR}
+                    lib/zstd/lib/) # workaround to add lib directory for zstd
 
 # targets
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} msgpackcxx
-                                      libzstd_static)
+target_link_libraries(${PROJECT_NAME} zp::msgpack
+                                      zp::zstd)
 
 # testing
 enable_testing()
