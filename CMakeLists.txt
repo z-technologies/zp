@@ -9,7 +9,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # project files
-set(SOURCE_FILES src/compress_zstd.cpp)
+set(SOURCE_FILES src/compress_zstd.cpp
+                 src/compress_lz4.cpp)
 include_directories(include/)
 
 # external dependencies
