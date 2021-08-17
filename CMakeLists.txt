@@ -23,6 +23,7 @@ add_subdirectory(lib/msgpack-c)
 add_subdirectory(lib/googletest)
 # zstd
 add_subdirectory(lib/zstd/build/cmake)
+include_directories(lib/zstd/lib)
 
 # targets
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
