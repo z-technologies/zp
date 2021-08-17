@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # project files
+set(SOURCE_FILES src/compression_filter_zstd.cpp)
 include_directories(include/)
 
 ## external dependencies
@@ -20,11 +21,14 @@ add_definitions(-DMSGPACK_USE_BOOST -DMSGPACK_BUILD_EXAMPLES=OFF -DMSGPACK_CXX17
 add_subdirectory(lib/msgpack-c)
 # googletest
 add_subdirectory(lib/googletest)
+# zstd
+add_subdirectory(lib/zstd/build/cmake)
 
 # targets
-add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} PUBLIC INTERFACE include)
-target_link_libraries(${PROJECT_NAME} INTERFACE msgpackcxx)
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_link_libraries(${PROJECT_NAME} msgpackcxx
+                                      libzstd_static)
 
 # testing
 enable_testing()
