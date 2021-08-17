@@ -7,8 +7,6 @@
 #include <cstdint>
 #include <vector>
 
-#include <iostream>
-
 namespace ztech::zp::compress {
 
 compression_zstd::compression_zstd(compression_strength strength)
@@ -30,7 +28,11 @@ auto compression_zstd::compress(const std::vector<std::uint8_t>& buf)
     std::vector<std::uint8_t> compressed(ZSTD_compressBound(buf.size()));
 
     const auto ret = ZSTD_compressCCtx(
-        cctx_, compressed.data(), compressed.size(), buf.data(), buf.size(),
+        cctx_,
+        compressed.data(),
+        compressed.size(),
+        buf.data(),
+        buf.size(),
         compression_levels[static_cast<int>(strength())]); // !NOLINT
     compressed.resize(ret);
 
@@ -47,8 +49,12 @@ auto compression_zstd::decompress(const std::vector<std::uint8_t>& buf)
 
     std::vector<std::uint8_t> decompressed(decompressed_size);
 
-    ZSTD_decompressDCtx(dctx_, decompressed.data(), decompressed.size(),
-                        buf.data(), buf.size());
+    auto ret = ZSTD_decompressDCtx(dctx_,
+                                   decompressed.data(),
+                                   decompressed.size(),
+                                   buf.data(),
+                                   buf.size());
+    decompressed.resize(ret);
 
     return decompressed;
 }
